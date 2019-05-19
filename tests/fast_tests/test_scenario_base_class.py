@@ -582,6 +582,7 @@ class TestRandomStartPos(unittest.TestCase):
 
 
 class TestEvenStartPosVariableLanes(unittest.TestCase):
+
     def setUp(self):
         # place 15 vehicles in the network (we need at least more than 1)
         vehicles = VehicleParams()
@@ -614,6 +615,7 @@ class TestEvenStartPosVariableLanes(unittest.TestCase):
 
 
 class TestRandomStartPosVariableLanes(TestEvenStartPosVariableLanes):
+
     def setUp(self):
         # place 15 vehicles in the network (we need at least more than 1)
         vehicles = VehicleParams()
@@ -631,253 +633,118 @@ class TestRandomStartPosVariableLanes(TestEvenStartPosVariableLanes):
             vehicles=vehicles, initial_config=initial_config)
 
 
-class TestEdgeLength(unittest.TestCase):
-    """
-    Tests the edge_length() method in the base scenario class.
-    """
+class TestGetterMethods(unittest.TestCase):
 
-    def test_edge_length_edges(self):
-        """
-        Tests the edge_length() method when called on edges
-        """
-        additional_net_params = {
-            "length": 1000,
-            "lanes": 2,
-            "speed_limit": 60,
-            "resolution": 40
-        }
-        net_params = NetParams(additional_params=additional_net_params)
+    def test_getter_methods(self):
+        # =================================================================== #
+        # test_internal_links                                                 #
+        # =================================================================== #
 
-        # create the environment and scenario classes for a figure eight
-        env, scenario = ring_road_exp_setup(net_params=net_params)
+        env, scenario = figure_eight_exp_setup(
+            net_params=NetParams(
+                no_internal_links=False,
+                additional_params={
+                    "radius_ring": 30,
+                    "lanes": 1,
+                    "speed_limit": 60,
+                    "resolution": 40
+                }
+            )
+        )
 
-        self.assertEqual(env.k.scenario.edge_length("top"), 250)
+        # Tests the next_edge() method in the presence of internal links.
+        next_edge = env.k.scenario.next_edge("bottom", 0)
+        expected_next_edge = [(':center_1', 0)]
+        self.assertCountEqual(next_edge, expected_next_edge)
 
-        # test for errors as well
-        self.assertAlmostEqual(env.k.scenario.edge_length("wrong_name"), -1001)
+        # Tests the prev_edge() method in the presence of internal links.
+        prev_edge = env.k.scenario.prev_edge("bottom", 0)
+        expected_prev_edge = [(':bottom_0', 0)]
+        self.assertCountEqual(prev_edge, expected_prev_edge)
 
-    def test_edge_length_junctions(self):
-        """
-        Tests the speed_limit() method when called on junctions
-        """
-        additional_net_params = {
-            "radius_ring": 30,
-            "lanes": 1,
-            "speed_limit": 60,
-            "resolution": 40
-        }
-        net_params = NetParams(
-            no_internal_links=False, additional_params=additional_net_params)
+        # Test the num_lanes() method when called on junctions.
+        self.assertEqual(env.k.scenario.num_lanes("bottom"), 1)
+        self.assertEqual(env.k.scenario.num_lanes(":top_0"), 1)
 
-        env, scenario = figure_eight_exp_setup(net_params=net_params)
+        # Test that the get_junction_list() in the scenario class properly
+        # returns all junctions, and no edges.
+        junction_list = env.k.scenario.get_junction_list()
+        expected_junction_list = \
+            [':right_0', ':left_0', ':bottom_0', ':top_0', ':center_1',
+             ':center_0']
+        self.assertCountEqual(junction_list, expected_junction_list)
 
+        # Test that the get_edge_list() in the scenario class properly returns
+        # all edges, and not junctions.
+        edge_list = env.k.scenario.get_edge_list()
+        expected_edge_list = [
+            "bottom", "top", "upper_ring", "right", "left", "lower_ring"]
+        self.assertListEqual(sorted(edge_list), sorted(expected_edge_list))
+
+        # Test the speed_limit() method when called on junctions.
+        self.assertAlmostEqual(env.k.scenario.speed_limit("bottom"), 60)
+        self.assertAlmostEqual(env.k.scenario.speed_limit(":top_0"), 60)
+
+        # Test the edge_length() method when called on junctions.
         self.assertAlmostEqual(
             env.k.scenario.edge_length(":center_0"), 9.40)  # FIXME: 6.2?
         self.assertAlmostEqual(
             env.k.scenario.edge_length(":center_1"), 9.40)  # FIXME: 6.2?
 
+        # =================================================================== #
+        # test_no_internal_links                                              #
+        # =================================================================== #
 
-class TestSpeedLimit(unittest.TestCase):
-    """
-    Tests the speed_limit() method in the base scenario class.
-    """
+        env, scenario = ring_road_exp_setup(
+            net_params=NetParams(
+                additional_params={
+                    "length": 230,
+                    "lanes": 2,
+                    "speed_limit": 60,
+                    "resolution": 40
+                }
+            )
+        )
 
-    def test_speed_limit_edges(self):
-        """
-        Tests the speed_limit() method when called on edges
-        """
-        additional_net_params = {
-            "length": 230,
-            "lanes": 2,
-            "speed_limit": 60,
-            "resolution": 40
-        }
-        net_params = NetParams(additional_params=additional_net_params)
+        # Tests the next_edge() method in the absence of internal links.
+        next_edge = env.k.scenario.next_edge("top", 0)
+        expected_next_edge = [("left", 0)]
+        self.assertCountEqual(next_edge, expected_next_edge)
 
-        # create the environment and scenario classes for a figure eight
-        env, scenario = ring_road_exp_setup(net_params=net_params)
+        # Tests the prev_edge() method in the absence of internal links.
+        prev_edge = env.k.scenario.prev_edge("top", 0)
+        expected_prev_edge = [("right", 0)]
+        self.assertCountEqual(prev_edge, expected_prev_edge)
 
-        self.assertAlmostEqual(env.k.scenario.speed_limit("top"), 60)
-
-        # test for errors as well
-        self.assertAlmostEqual(env.k.scenario.speed_limit("wrong_name"), -1001)
-
-    def test_speed_limit_junctions(self):
-        """
-        Tests the speed_limit() method when called on junctions
-        """
-        additional_net_params = {
-            "radius_ring": 30,
-            "lanes": 1,
-            "speed_limit": 60,
-            "resolution": 40
-        }
-        net_params = NetParams(
-            no_internal_links=False, additional_params=additional_net_params)
-
-        env, scenario = figure_eight_exp_setup(net_params=net_params)
-
-        self.assertAlmostEqual(
-            env.k.scenario.speed_limit("bottom"), 60)
-        self.assertAlmostEqual(
-            env.k.scenario.speed_limit(":top_0"), 60)
-
-
-class TestNumLanes(unittest.TestCase):
-    """
-    Tests the num_lanes() method in the base scenario class.
-    """
-
-    def test_num_lanes_edges(self):
-        """
-        Tests the num_lanes() method when called on edges
-        """
-        additional_net_params = {
-            "length": 230,
-            "lanes": 2,
-            "speed_limit": 30,
-            "resolution": 40
-        }
-        net_params = NetParams(additional_params=additional_net_params)
-
-        # create the environment and scenario classes for a figure eight
-        env, scenario = ring_road_exp_setup(net_params=net_params)
-
+        # Tests the num_lanes() method when called on edges
         self.assertEqual(env.k.scenario.num_lanes("top"), 2)
-
         # test for errors as well
         self.assertAlmostEqual(env.k.scenario.num_lanes("wrong_name"), -1001)
 
-    def test_num_lanes_junctions(self):
-        """
-        Tests the num_lanes() method when called on junctions
-        """
-        additional_net_params = {
-            "radius_ring": 30,
-            "lanes": 3,
-            "speed_limit": 60,
-            "resolution": 40
-        }
-        net_params = NetParams(
-            no_internal_links=False, additional_params=additional_net_params)
+        # Test the speed_limit() method when called on edges.
+        self.assertAlmostEqual(env.k.scenario.speed_limit("top"), 60)
+        # test for errors as well
+        self.assertAlmostEqual(env.k.scenario.speed_limit("wrong_name"), -1001)
 
-        env, scenario = figure_eight_exp_setup(net_params=net_params)
+        # Test the edge_length() method when called on edges.
+        self.assertEqual(env.k.scenario.edge_length("top"), 57.5)
+        # test for errors as well
+        self.assertAlmostEqual(env.k.scenario.edge_length("wrong_name"), -1001)
 
-        self.assertEqual(env.k.scenario.num_lanes("bottom"), 3)
-        self.assertEqual(env.k.scenario.num_lanes(":top_0"), 3)
+        # =================================================================== #
+        # test_no_edge                                                        #
+        # =================================================================== #
 
-
-class TestGetEdgeList(unittest.TestCase):
-    """
-    Tests that the get_edge_list() in the scenario class properly returns all
-    edges, and not junctions.
-    """
-
-    def setUp(self):
-        # create the environment and scenario classes for a figure eight
-        self.env, scenario = figure_eight_exp_setup()
-
-    def tearDown(self):
-        # free data used by the class
-        self.env.terminate()
-        self.env = None
-
-    def test_get_edge_list(self):
-        edge_list = self.env.k.scenario.get_edge_list()
-        expected_edge_list = [
-            "bottom", "top", "upper_ring", "right", "left", "lower_ring"]
-
-        self.assertCountEqual(edge_list, expected_edge_list)
-
-
-class TestGetJunctionList(unittest.TestCase):
-    """
-    Tests that the get_junction_list() in the scenario class properly returns
-    all junctions, and no edges.
-    """
-
-    def setUp(self):
-        # create the environment and scenario classes for a figure eight
-        self.env, scenario = figure_eight_exp_setup()
-
-    def tearDown(self):
-        # free data used by the class
-        self.env.terminate()
-        self.env = None
-
-    def test_get_junction_list(self):
-        junction_list = self.env.k.scenario.get_junction_list()
-        expected_junction_list = \
-            [':right_0', ':left_0', ':bottom_0', ':top_0', ':center_1',
-             ':center_0']
-
-        self.assertCountEqual(junction_list, expected_junction_list)
-
-
-class TestNextPrevEdge(unittest.TestCase):
-    """
-    Tests that the next_edge() and prev_edge() methods returns the correct list
-    of edges/lanes when looking to a scenario. This also tests that junctions
-    are provided as next edges if they are before the next edge (e.g. a via to
-    the next edge)
-    """
-
-    def test_next_edge_internal_links(self):
-        """
-        Tests the next_edge() method in the presence of internal links.
-        """
-        env, scenario = figure_eight_exp_setup()
-        next_edge = env.k.scenario.next_edge("bottom", 0)
-        expected_next_edge = [(':center_1', 0)]
-
-        self.assertCountEqual(next_edge, expected_next_edge)
-
-    def test_prev_edge_internal_links(self):
-        """
-        Tests the prev_edge() method in the presence of internal links.
-        """
-        env, scenario = figure_eight_exp_setup()
-        prev_edge = env.k.scenario.prev_edge("bottom", 0)
-        expected_prev_edge = [(':bottom_0', 0)]
-
-        self.assertCountEqual(prev_edge, expected_prev_edge)
-
-    def test_next_edge_no_internal_links(self):
-        """
-        Tests the next_edge() method in the absence of internal links.
-        """
-        env, scenario = ring_road_exp_setup()
-        next_edge = env.k.scenario.next_edge("top", 0)
-        expected_next_edge = [("left", 0)]
-
-        self.assertCountEqual(next_edge, expected_next_edge)
-
-    def test_prev_edge_no_internal_links(self):
-        """
-        Tests the prev_edge() method in the absence of internal links.
-        """
-        env, scenario = ring_road_exp_setup()
-        prev_edge = env.k.scenario.prev_edge("top", 0)
-        expected_prev_edge = [("right", 0)]
-
-        self.assertCountEqual(prev_edge, expected_prev_edge)
-
-    def test_no_edge_ahead(self):
-        """
-        Tests that, when there are no edges in front, next_edge() returns an
-        empty list
-        """
         env, scenario = highway_exp_setup()
+
+        # Tests that, when there are no edges in front, next_edge() returns an
+        # empty list
         next_edge = env.k.scenario.next_edge(
             env.k.scenario.get_edge_list()[0], 0)
         self.assertTrue(len(next_edge) == 0)
 
-    def test_no_edge_behind(self):
-        """
-        Tests that, when there are no edges behind, prev_edge() returns an
-        empty list
-        """
-        env, scenario = highway_exp_setup()
+        # Tests that, when there are no edges behind, prev_edge() returns an
+        # empty list
         prev_edge = env.k.scenario.prev_edge(
             env.k.scenario.get_edge_list()[0], 0)
         self.assertTrue(len(prev_edge) == 0)

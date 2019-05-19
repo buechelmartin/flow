@@ -2,7 +2,6 @@ import os
 import unittest
 
 from flow.controllers import RLController, IDMController, StaticLaneChanger
-from flow.core.experiment import Experiment
 from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams, \
     SumoCarFollowingParams
 from flow.core.params import VehicleParams
@@ -86,9 +85,6 @@ class TestLoopMerges(unittest.TestCase):
         # create the environment and scenario classes for a ring road
         self.env, scenario = two_loops_one_merging_exp_setup()
 
-        # instantiate an experiment class
-        self.exp = Experiment(self.env)
-
     def tearDown(self):
         # terminate the traci instance
         self.env.terminate()
@@ -96,13 +92,6 @@ class TestLoopMerges(unittest.TestCase):
         # free up used memory
         self.env = None
         self.exp = None
-
-    def test_it_runs(self):
-        """
-        Tests that the loop merges experiment runs, and vehicles do not exit
-        the network.
-        """
-        self.exp.run(1, 10)
 
     def test_gen_custom_start_pos(self):
         """

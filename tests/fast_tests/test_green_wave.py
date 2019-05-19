@@ -1,18 +1,14 @@
 import unittest
 
-from flow.core.experiment import Experiment
-
 from tests.setup_scripts import grid_mxn_exp_setup
 
 
 class TestEnvironment(unittest.TestCase):
+
     def setUp(self):
         # create the environment and scenario classes for a ring road
         self.env, self.scenario = grid_mxn_exp_setup()
         self.env.reset()
-
-        # instantiate an experiment class
-        self.exp = Experiment(self.env)
 
     def tearDown(self):
         # terminate the traci instance
@@ -20,7 +16,6 @@ class TestEnvironment(unittest.TestCase):
 
         # free up used memory
         self.env = None
-        self.exp = None
 
     def test_split_edge(self):
         """
@@ -47,13 +42,11 @@ class TestEnvironment(unittest.TestCase):
 
 
 class TestUtils(unittest.TestCase):
+
     def setUp(self):
         # create the environment and scenario classes for a ring road
         self.env, self.scenario = grid_mxn_exp_setup()
         self.env.reset()
-
-        # instantiate an experiment class
-        self.exp = Experiment(self.env)
 
     @staticmethod
     def gen_edges(row_num, col_num):
@@ -101,7 +94,6 @@ class TestUtils(unittest.TestCase):
             self.assertEqual(0, self.env.get_distance_to_intersection(veh_id))
 
     def test_sort_by_intersection_dist(self):
-        self.env.reset()
         # Get the veh_ids by entrance edges.
         veh_ids = [
             self.env.k.vehicle.get_ids_by_edge(e) for e in self.gen_edges(1, 1)
@@ -123,7 +115,6 @@ class TestUtils(unittest.TestCase):
 
         # free up used memory
         self.env = None
-        self.exp = None
 
 
 if __name__ == '__main__':

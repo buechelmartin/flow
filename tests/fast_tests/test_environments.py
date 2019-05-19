@@ -50,8 +50,21 @@ class TestLaneChangeAccelEnv(unittest.TestCase):
         self.scenario = None
         self.env_params = None
 
-    def test_additional_env_params(self):
-        """Ensures that not returning the correct params leads to an error."""
+    def test_basics(self):
+        # create the environment
+        env = LaneChangeAccelEnv(
+            sim_params=self.sim_params,
+            scenario=self.scenario,
+            env_params=self.env_params
+        )
+        env.reset()
+
+        # =================================================================== #
+        # test_additional_env_params                                          #
+        #                                                                     #
+        # Ensures that not returning the correct params leads to an error.    #
+        # =================================================================== #
+
         self.assertTrue(
             test_additional_params(
                 env_class=LaneChangeAccelEnv,
@@ -67,14 +80,11 @@ class TestLaneChangeAccelEnv(unittest.TestCase):
             )
         )
 
-    def test_observation_action_space(self):
-        """Tests the observation and action spaces upon initialization."""
-        # create the environment
-        env = LaneChangeAccelEnv(
-            sim_params=self.sim_params,
-            scenario=self.scenario,
-            env_params=self.env_params
-        )
+        # =================================================================== #
+        # test_observation_action_space                                       #
+        #                                                                     #
+        # Tests the observation and action spaces upon initialization.        #
+        # =================================================================== #
 
         # check the observation space
         self.assertTrue(test_space(
@@ -94,19 +104,16 @@ class TestLaneChangeAccelEnv(unittest.TestCase):
                 env.env_params.additional_params["max_accel"], 1]))
         )
 
-        env.terminate()
+        # =================================================================== #
+        # test_observed                                                       #
+        #                                                                     #
+        # Ensures that the observed ids are returning the correct vehicles.   #
+        # =================================================================== #
 
-    def test_observed(self):
-        """Ensures that the observed ids are returning the correct vehicles."""
-        self.assertTrue(
-            test_observed(
-                env_class=LaneChangeAccelEnv,
-                sim_params=self.sim_params,
-                scenario=self.scenario,
-                env_params=self.env_params,
-                expected_observed=["human_0"]
-            )
-        )
+        self.assertTrue(test_observed(env, ["human_0"]))
+
+        # terminate the environment
+        env.terminate()
 
 
 class TestLaneChangeAccelPOEnv(unittest.TestCase):
@@ -137,8 +144,21 @@ class TestLaneChangeAccelPOEnv(unittest.TestCase):
         self.scenario = None
         self.env_params = None
 
-    def test_additional_env_params(self):
-        """Ensures that not returning the correct params leads to an error."""
+    def test_basics(self):
+        # create the environment
+        env = LaneChangeAccelPOEnv(
+            sim_params=self.sim_params,
+            scenario=self.scenario,
+            env_params=self.env_params
+        )
+        env.reset()
+
+        # =================================================================== #
+        # test_additional_env_params                                          #
+        #                                                                     #
+        # Ensures that not returning the correct params leads to an error.    #
+        # =================================================================== #
+
         self.assertTrue(
             test_additional_params(
                 env_class=LaneChangeAccelPOEnv,
@@ -154,14 +174,11 @@ class TestLaneChangeAccelPOEnv(unittest.TestCase):
             )
         )
 
-    def test_observation_action_space(self):
-        """Tests the observation and action spaces upon initialization."""
-        # create the environment
-        env = LaneChangeAccelPOEnv(
-            sim_params=self.sim_params,
-            scenario=self.scenario,
-            env_params=self.env_params
-        )
+        # =================================================================== #
+        # test_observation_action_space                                       #
+        #                                                                     #
+        # Tests the observation and action spaces upon initialization.        #
+        # =================================================================== #
 
         # check the observation space
         self.assertTrue(test_space(
@@ -176,19 +193,16 @@ class TestLaneChangeAccelPOEnv(unittest.TestCase):
             expected_max=np.array([3, 1]))
         )
 
-        env.terminate()
+        # =================================================================== #
+        # test_observed                                                       #
+        #                                                                     #
+        # Ensures that the observed ids are returning the correct vehicles.   #
+        # =================================================================== #
 
-    def test_observed(self):
-        """Ensures that the observed ids are returning the correct vehicles."""
-        self.assertTrue(
-            test_observed(
-                env_class=LaneChangeAccelPOEnv,
-                sim_params=self.sim_params,
-                scenario=self.scenario,
-                env_params=self.env_params,
-                expected_observed=["human_0"]
-            )
-        )
+        self.assertTrue(test_observed(env, ["human_0"]))
+
+        # terminate the environment
+        env.terminate()
 
 
 class TestAccelEnv(unittest.TestCase):
@@ -218,8 +232,21 @@ class TestAccelEnv(unittest.TestCase):
         self.scenario = None
         self.env_params = None
 
-    def test_additional_env_params(self):
-        """Ensures that not returning the correct params leads to an error."""
+    def test_basics(self):
+        # create the environment
+        env = AccelEnv(
+            sim_params=self.sim_params,
+            scenario=self.scenario,
+            env_params=self.env_params
+        )
+        env.reset()
+
+        # =================================================================== #
+        # test_additional_env_params                                          #
+        #                                                                     #
+        # Ensures that not returning the correct params leads to an error.    #
+        # =================================================================== #
+
         self.assertTrue(
             test_additional_params(
                 env_class=AccelEnv,
@@ -234,13 +261,11 @@ class TestAccelEnv(unittest.TestCase):
             )
         )
 
-    def test_observation_action_space(self):
-        """Tests the observation and action spaces upon initialization."""
-        env = AccelEnv(
-            sim_params=self.sim_params,
-            scenario=self.scenario,
-            env_params=self.env_params
-        )
+        # =================================================================== #
+        # test_observation_action_space                                       #
+        #                                                                     #
+        # Tests the observation and action spaces upon initialization.        #
+        # =================================================================== #
 
         # check the observation space
         self.assertTrue(test_space(
@@ -256,19 +281,16 @@ class TestAccelEnv(unittest.TestCase):
             expected_max=env.env_params.additional_params["max_accel"])
         )
 
-        env.terminate()
+        # =================================================================== #
+        # test_observed                                                       #
+        #                                                                     #
+        # Ensures that the observed ids are returning the correct vehicles.   #
+        # =================================================================== #
 
-    def test_observed(self):
-        """Ensures that the observed ids are returning the correct vehicles."""
-        self.assertTrue(
-            test_observed(
-                env_class=AccelEnv,
-                sim_params=self.sim_params,
-                scenario=self.scenario,
-                env_params=self.env_params,
-                expected_observed=["human_0"]
-            )
-        )
+        self.assertTrue(test_observed(env, ["human_0"]))
+
+        # terminate the environment
+        env.terminate()
 
     def test_sorting(self):
         """
@@ -353,8 +375,22 @@ class TestTwoLoopsMergeEnv(unittest.TestCase):
         self.scenario = None
         self.env_params = None
 
-    def test_additional_env_params(self):
-        """Ensures that not returning the correct params leads to an error."""
+    def test_basics(self):
+        """Tests the observation and action spaces upon initialization."""
+        # create the environment
+        env = TwoLoopsMergePOEnv(
+            sim_params=self.sim_params,
+            scenario=self.scenario,
+            env_params=self.env_params
+        )
+        env.reset()
+
+        # =================================================================== #
+        # test_additional_env_params                                          #
+        #                                                                     #
+        # Ensures that not returning the correct params leads to an error.    #
+        # =================================================================== #
+
         self.assertTrue(
             test_additional_params(
                 env_class=TwoLoopsMergePOEnv,
@@ -371,13 +407,11 @@ class TestTwoLoopsMergeEnv(unittest.TestCase):
             )
         )
 
-    def test_observation_action_space(self):
-        """Tests the observation and action spaces upon initialization."""
-        env = TwoLoopsMergePOEnv(
-            sim_params=self.sim_params,
-            scenario=self.scenario,
-            env_params=self.env_params
-        )
+        # =================================================================== #
+        # test_observation_action_space                                       #
+        #                                                                     #
+        # Tests the observation and action spaces upon initialization.        #
+        # =================================================================== #
 
         # check the observation space
         self.assertTrue(test_space(
@@ -392,6 +426,7 @@ class TestTwoLoopsMergeEnv(unittest.TestCase):
             expected_max=env.env_params.additional_params["max_accel"])
         )
 
+        # terminate the environment
         env.terminate()
 
 
@@ -439,11 +474,19 @@ class TestWaveAttenuationEnv(unittest.TestCase):
 
     def test_observation_action_space(self):
         """Tests the observation and action spaces upon initialization."""
+        # create the environment
         env = WaveAttenuationEnv(
             sim_params=self.sim_params,
             scenario=self.scenario,
             env_params=self.env_params
         )
+        env.reset()
+
+        # =================================================================== #
+        # test_observation_action_space                                       #
+        #                                                                     #
+        # Tests the observation and action spaces upon initialization.        #
+        # =================================================================== #
 
         # check the observation space
         self.assertTrue(test_space(
@@ -459,19 +502,16 @@ class TestWaveAttenuationEnv(unittest.TestCase):
             expected_max=env.env_params.additional_params["max_accel"])
         )
 
-        env.terminate()
+        # =================================================================== #
+        # test_observed                                                       #
+        #                                                                     #
+        # Ensures that the observed ids are returning the correct vehicles.   #
+        # =================================================================== #
 
-    def test_observed(self):
-        """Ensures that the observed ids are returning the correct vehicles."""
-        self.assertTrue(
-            test_observed(
-                env_class=WaveAttenuationEnv,
-                sim_params=self.sim_params,
-                scenario=self.scenario,
-                env_params=self.env_params,
-                expected_observed=["human_0"]
-            )
-        )
+        self.assertTrue(test_observed(env, ["human_0"]))
+
+        # terminate the environment
+        env.terminate()
 
     def test_reset(self):
         """
@@ -560,8 +600,21 @@ class TestWaveAttenuationPOEnv(unittest.TestCase):
         self.scenario = None
         self.env_params = None
 
-    def test_additional_env_params(self):
-        """Ensures that not returning the correct params leads to an error."""
+    def test_all(self):
+        # create the environment
+        env = WaveAttenuationPOEnv(
+            sim_params=self.sim_params,
+            scenario=self.scenario,
+            env_params=self.env_params
+        )
+        env.reset()
+
+        # =================================================================== #
+        # test_additional_env_params                                          #
+        #                                                                     #
+        # Ensures that not returning the correct params leads to an error.    #
+        # =================================================================== #
+
         self.assertTrue(
             test_additional_params(
                 env_class=WaveAttenuationPOEnv,
@@ -575,14 +628,11 @@ class TestWaveAttenuationPOEnv(unittest.TestCase):
             )
         )
 
-    def test_observation_action_space(self):
-        """Tests the observation and action spaces upon initialization."""
-        # create the environment
-        env = WaveAttenuationPOEnv(
-            sim_params=self.sim_params,
-            scenario=self.scenario,
-            env_params=self.env_params
-        )
+        # =================================================================== #
+        # test_observation_action_space                                       #
+        #                                                                     #
+        # Tests the observation and action spaces upon initialization.        #
+        # =================================================================== #
 
         # check the observation space
         self.assertTrue(test_space(
@@ -597,34 +647,23 @@ class TestWaveAttenuationPOEnv(unittest.TestCase):
             env.action_space,
             expected_size=1, expected_min=-1, expected_max=1))
 
-        env.terminate()
+        # =================================================================== #
+        # test_observed                                                       #
+        #                                                                     #
+        # Ensures that the observed ids are returning the correct vehicles.   #
+        # =================================================================== #
 
-    def test_observed(self):
-        """Ensures that the observed ids are returning the correct vehicles."""
-        self.assertTrue(
-            test_observed(
-                env_class=WaveAttenuationPOEnv,
-                sim_params=self.sim_params,
-                scenario=self.scenario,
-                env_params=self.env_params,
-                expected_observed=["human_0"]
-            )
-        )
+        self.assertTrue(test_observed(env, ["human_0"]))
 
-    def test_reward(self):
-        """Check the reward function for different values.
-
-        The reward function should be a linear combination of the average speed
-        of all vehicles and a penalty on the requested accelerations by the
-        AVs.
-        """
-        # create the environment
-        env = WaveAttenuationPOEnv(
-            sim_params=self.sim_params,
-            scenario=self.scenario,
-            env_params=self.env_params
-        )
-        env.reset()
+        # =================================================================== #
+        # test_reward                                                         #
+        #                                                                     #
+        # Check the reward function for different values.                     #
+        #                                                                     #
+        # The reward function should be a linear combination of the average   #
+        # speed of all vehicles and a penalty on the requested accelerations  #
+        # by the AVs.                                                         #
+        # =================================================================== #
 
         # check the reward for no acceleration
 
@@ -674,6 +713,9 @@ class TestWaveAttenuationPOEnv(unittest.TestCase):
             -3.8
         )
 
+        # terminate the environment
+        env.terminate()
+
 
 class TestWaveAttenuationMergePOEnv(unittest.TestCase):
 
@@ -702,8 +744,21 @@ class TestWaveAttenuationMergePOEnv(unittest.TestCase):
         self.scenario = None
         self.env_params = None
 
-    def test_additional_env_params(self):
-        """Ensures that not returning the correct params leads to an error."""
+    def test_basics(self):
+        # create the environment
+        env = WaveAttenuationMergePOEnv(
+            sim_params=self.sim_params,
+            scenario=self.scenario,
+            env_params=self.env_params
+        )
+        env.reset()
+
+        # =================================================================== #
+        # test_additional_env_params                                          #
+        #                                                                     #
+        # Ensures that not returning the correct params leads to an error.    #
+        # =================================================================== #
+
         self.assertTrue(
             test_additional_params(
                 env_class=WaveAttenuationMergePOEnv,
@@ -718,14 +773,11 @@ class TestWaveAttenuationMergePOEnv(unittest.TestCase):
             )
         )
 
-    def test_observation_action_space(self):
-        """Tests the observation and action spaces upon initialization."""
-        # create the environment
-        env = WaveAttenuationMergePOEnv(
-            sim_params=self.sim_params,
-            scenario=self.scenario,
-            env_params=self.env_params
-        )
+        # =================================================================== #
+        # test_observation_action_space                                       #
+        #                                                                     #
+        # Tests the observation and action spaces upon initialization.        #
+        # =================================================================== #
 
         # check the observation space
         self.assertTrue(test_space(
@@ -737,26 +789,24 @@ class TestWaveAttenuationMergePOEnv(unittest.TestCase):
             env.action_space,
             expected_size=5, expected_min=-3, expected_max=3))
 
-        env.terminate()
+        # =================================================================== #
+        # test_observed                                                       #
+        #                                                                     #
+        # Ensures that the observed ids are returning the correct vehicles.   #
+        # =================================================================== #
 
-    def test_observed(self):
-        """Ensures that the observed ids are returning the correct vehicles."""
-        self.assertTrue(
-            test_observed(
-                env_class=WaveAttenuationMergePOEnv,
-                sim_params=self.sim_params,
-                scenario=self.scenario,
-                env_params=self.env_params,
-                expected_observed=["human_0"]
-            )
-        )
+        self.assertTrue(test_observed(env, ["human_0"]))
+
+        # terminate the environment
+        env.terminate()
 
 
 class TestTestEnv(unittest.TestCase):
 
     """Tests the TestEnv environment in flow/envs/test.py"""
 
-    def setUp(self):
+    def test_all(self):
+        # create the environment
         vehicles = VehicleParams()
         vehicles.add("test")
         net_params = NetParams(additional_params=LOOP_PARAMS)
@@ -765,35 +815,35 @@ class TestTestEnv(unittest.TestCase):
         scenario = LoopScenario("test_loop",
                                 vehicles=vehicles,
                                 net_params=net_params)
-        self.env = TestEnv(env_params, sim_params, scenario)
+        env = TestEnv(env_params, sim_params, scenario)
 
-    def tearDown(self):
-        self.env.terminate()
-        self.env = None
+        # test_obs_space
+        self.assertEqual(env.observation_space.shape[0], 0)
+        self.assertEqual(len(env.observation_space.high), 0)
+        self.assertEqual(len(env.observation_space.low), 0)
 
-    def test_obs_space(self):
-        self.assertEqual(self.env.observation_space.shape[0], 0)
-        self.assertEqual(len(self.env.observation_space.high), 0)
-        self.assertEqual(len(self.env.observation_space.low), 0)
+        # test_action_space
+        self.assertEqual(env.action_space.shape[0], 0)
+        self.assertEqual(len(env.action_space.high), 0)
+        self.assertEqual(len(env.action_space.low), 0)
 
-    def test_action_space(self):
-        self.assertEqual(self.env.action_space.shape[0], 0)
-        self.assertEqual(len(self.env.action_space.high), 0)
-        self.assertEqual(len(self.env.action_space.low), 0)
+        # test_get_state
+        self.assertEqual(len(env.get_state()), 0)
 
-    def test_get_state(self):
-        self.assertEqual(len(self.env.get_state()), 0)
+        # test_compute_reward
 
-    def test_compute_reward(self):
         # test the default
-        self.assertEqual(self.env.compute_reward([]), 0)
+        self.assertEqual(env.compute_reward([]), 0)
 
         # test if the "reward_fn" parameter is defined
         def reward_fn(*_):
             return 1
 
-        self.env.env_params.additional_params["reward_fn"] = reward_fn
-        self.assertEqual(self.env.compute_reward([]), 1)
+        env.env_params.additional_params["reward_fn"] = reward_fn
+        self.assertEqual(env.compute_reward([]), 1)
+
+        # terminate the environment
+        env.terminate()
 
 
 class TestBottleneckEnv(unittest.TestCase):
@@ -832,8 +882,13 @@ class TestBottleneckEnv(unittest.TestCase):
         self.env.terminate()
         del self.env
 
-    def test_additional_env_params(self):
-        """Ensures that not returning the correct params leads to an error."""
+    def test_all(self):
+        # =================================================================== #
+        # test_additional_env_params                                          #
+        #                                                                     #
+        # Ensures that not returning the correct params leads to an error.    #
+        # =================================================================== #
+
         self.assertTrue(
             test_additional_params(
                 env_class=BottleneckEnv,
@@ -849,19 +904,12 @@ class TestBottleneckEnv(unittest.TestCase):
             )
         )
 
-    def test_distance_to_bottleneck(self):
-        self.assertEqual(self.env.distance_to_bottleneck('human_0'), 545.0)
-        self.assertEqual(self.env.distance_to_bottleneck('human_9'), -1)
+        # =================================================================== #
+        # test_observation_action_space                                       #
+        #                                                                     #
+        # Tests the observation and action spaces upon initialization.        #
+        # =================================================================== #
 
-    def test_get_bottleneck_density(self):
-        self.assertEqual(self.env.get_bottleneck_density(), 0)
-
-    def test_get_avg_bottleneck_velocity(self):
-        self.env.step(None)
-        self.assertAlmostEqual(self.env.get_avg_bottleneck_velocity(), 0.5, 1)
-
-    def test_observation_action_space(self):
-        """Tests the observation and action spaces upon initialization."""
         # check the observation space
         self.assertTrue(test_space(
             self.env.observation_space,
@@ -877,6 +925,21 @@ class TestBottleneckEnv(unittest.TestCase):
             expected_min=-float('inf'),
             expected_max=float('inf'))
         )
+
+        # =================================================================== #
+        # test_utility_methods                                                #
+        # =================================================================== #
+
+        # test_distance_to_bottleneck
+        self.assertEqual(self.env.distance_to_bottleneck('human_0'), 545.0)
+        self.assertEqual(self.env.distance_to_bottleneck('human_9'), -1)
+
+        # test_get_bottleneck_density
+        self.assertEqual(self.env.get_bottleneck_density(), 0)
+
+        # test_get_avg_bottleneck_velocity
+        self.env.step(None)
+        self.assertAlmostEqual(self.env.get_avg_bottleneck_velocity(), 0.5, 1)
 
 
 class TestBottleneckAccelEnv(unittest.TestCase):
@@ -1099,23 +1162,13 @@ def test_space(gym_space, expected_size, expected_min, expected_max):
         and all(gym_space.low == expected_min)
 
 
-def test_observed(env_class,
-                  sim_params,
-                  scenario,
-                  env_params,
-                  expected_observed):
+def test_observed(env, expected_observed):
     """Test that the observed vehicles in the environment are as expected.
 
     Parameters
     ----------
-    env_class : flow.envs.Env class
-        blank
-    sim_params : flow.core.params.SumoParams
-        sumo-specific parameters
-    scenario : flow.scenarios.Scenario
-        scenario that works for the environment
-    env_params : flow.core.params.EnvParams
-        environment-specific parameters
+    env : flow.envs.*
+        the environment that is being tested
     expected_observed : array_like
         expected list of observed vehicles
 
@@ -1124,17 +1177,12 @@ def test_observed(env_class,
     bool
         True if the test passed, False otherwise
     """
-    env = env_class(sim_params=sim_params,
-                    scenario=scenario,
-                    env_params=env_params)
-    env.reset()
     env.step(None)
     env.additional_command()
     test_mask = np.all(
         np.array(env.k.vehicle.get_observed_ids()) ==
         np.array(expected_observed)
     )
-    env.terminate()
 
     return test_mask
 

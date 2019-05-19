@@ -98,6 +98,7 @@ class TestSetState(unittest.TestCase):
         # create the environment and scenario classes for a ring road
         self.env, scenario = ring_road_exp_setup(
             net_params=net_params, traffic_lights=traffic_lights)
+        self.env.reset()
 
     def tearDown(self):
         # terminate the traci instance
@@ -106,9 +107,10 @@ class TestSetState(unittest.TestCase):
         # free data used by the class
         self.env = None
 
-    def test_all_lanes(self):
-        # reset the environment
-        self.env.reset()
+    def test_set_state(self):
+        # =================================================================== #
+        # test_all_lanes                                                      #
+        # =================================================================== #
 
         # set all states to something
         self.env.k.traffic_light.set_state(node_id="top", state="rY")
@@ -121,9 +123,9 @@ class TestSetState(unittest.TestCase):
 
         self.assertEqual(state, "rY")
 
-    def test_single_lane(self):
-        # reset the environment
-        self.env.reset()
+        # =================================================================== #
+        # test_single_lane                                                    #
+        # =================================================================== #
 
         # set all state of lane 1 to something
         self.env.k.traffic_light.set_state(

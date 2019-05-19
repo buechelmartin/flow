@@ -140,13 +140,16 @@ class TestApplyingActionsWithSumo(unittest.TestCase):
         # free data used by the class
         self.env = None
 
-    def test_apply_acceleration(self):
-        """
-        Tests that, in the absence of all failsafes, the acceleration requested
-        from sumo is equal to the acceleration witnessed in between steps. Also
-        ensures that vehicles can never have velocities below zero given any
-        acceleration.
-        """
+    def test_apply_actions(self):
+        #######################################################################
+        # test_apply_acceleration                                             #
+        #                                                                     #
+        # Tests that, in the absence of all failsafes, the acceleration       #
+        # requested from sumo is equal to the acceleration witnessed in       #
+        # between steps. Also ensures that vehicles can never have velocities #
+        # below zero given any acceleration.                                  #
+        #######################################################################
+
         ids = self.env.k.vehicle.get_ids()
 
         vel0 = np.array(
@@ -184,12 +187,11 @@ class TestApplyingActionsWithSumo(unittest.TestCase):
 
         np.testing.assert_array_almost_equal(vel2, expected_vel2, 1)
 
-    def test_apply_lane_change_errors(self):
-        """
-        Ensures that apply_lane_change raises ValueErrors when it should
-        """
-        self.env.reset()
-        ids = self.env.k.vehicle.get_ids()
+        #######################################################################
+        # test_apply_lane_change_errors                                       #
+        #                                                                     #
+        # Ensures that apply_lane_change raises ValueErrors when it should.   #
+        #######################################################################
 
         # make sure that running apply lane change with a invalid direction
         # values leads to a ValueError
@@ -201,15 +203,15 @@ class TestApplyingActionsWithSumo(unittest.TestCase):
             veh_ids=ids,
             direction=bad_directions)
 
-    def test_apply_lane_change_direction(self):
-        """
-        Tests the direction method for apply_lane_change. Ensures that the lane
-        change action requested from sumo is the same as the lane change that
-        occurs, and that vehicles attempting do not issue lane changes in there
-        is no lane in te requested direction.
-        """
-        self.env.reset()
-        ids = self.env.k.vehicle.get_ids()
+        #######################################################################
+        # test_apply_lane_change_direction                                    #
+        #                                                                     #
+        # Tests the direction method for apply_lane_change. Ensures that the  #
+        # lane change action requested from sumo is the same as the lane      #
+        # change that occurs, and that vehicles attempting do not issue lane  #
+        # changes in there is no lane in te requested direction.              #
+        #######################################################################
+
         lane0 = np.array(
             [self.env.k.vehicle.get_lane(veh_id) for veh_id in ids])
         max_lanes = self.env.scenario.net_params.additional_params['lanes']
@@ -319,15 +321,24 @@ class TestAbstractMethods(unittest.TestCase):
         self.env.terminate()
         self.env = None
 
-    def test_get_state(self):
-        """Checks that get_state raises an error."""
+    def test_abstract_methods(self):
+        #######################################################################
+        # test_get_state                                                      #
+        #                                                                     #
+        # Checks that get_state raises an error.                              #
+        #######################################################################
         self.assertRaises(NotImplementedError, self.env.get_state)
 
-    def test_compute_reward(self):
-        """Checks that compute_reward returns 0."""
+        #######################################################################
+        # test_compute_reward                                                 #
+        #                                                                     #
+        # Checks that compute_reward returns 0.                               #
+        #######################################################################
         self.assertEqual(self.env.compute_reward([]), 0)
 
-    def test__apply_rl_actions(self):
+        #######################################################################
+        # test__apply_rl_actions                                              #
+        #######################################################################
         self.assertRaises(NotImplementedError, self.env._apply_rl_actions,
                           rl_actions=None)
 
