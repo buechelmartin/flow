@@ -7,7 +7,7 @@ class TestEnvironment(unittest.TestCase):
 
     def setUp(self):
         # create the environment and scenario classes for a ring road
-        self.env, self.scenario = grid_mxn_exp_setup()
+        self.env, _ = grid_mxn_exp_setup()
         self.env.reset()
 
     def tearDown(self):
@@ -45,11 +45,11 @@ class TestUtils(unittest.TestCase):
 
     def setUp(self):
         # create the environment and scenario classes for a ring road
-        self.env, self.scenario = grid_mxn_exp_setup()
+        self.env, _ = grid_mxn_exp_setup()
         self.env.reset()
 
     @staticmethod
-    def gen_edges(row_num, col_num):
+    def gen_edges(col_num, row_num):
         edges = []
         for i in range(col_num):
             edges += ["left" + str(row_num) + '_' + str(i)]
@@ -69,7 +69,7 @@ class TestUtils(unittest.TestCase):
             self.env.k.vehicle.get_ids_by_edge(e) for e in self.gen_edges(1, 1)
         ]
         dists = [self.env.get_distance_to_intersection(v) for v in veh_ids]
-        grid = self.env.scenario.net_params.additional_params['grid_array']
+        grid = self.env.net_params.additional_params['grid_array']
         short_length = grid['short_length']
 
         # The first check asserts all the lists are equal. With the default
@@ -92,22 +92,6 @@ class TestUtils(unittest.TestCase):
             filter(lambda x: 'center' in x, self.env.k.vehicle.get_ids()))
         for veh_id in junction_veh:
             self.assertEqual(0, self.env.get_distance_to_intersection(veh_id))
-
-    def test_sort_by_intersection_dist(self):
-        # Get the veh_ids by entrance edges.
-        veh_ids = [
-            self.env.k.vehicle.get_ids_by_edge(e) for e in self.gen_edges(1, 1)
-        ]
-
-        # Each list in veh_ids is inherently sorted from
-        # farthest to closest. We zip the lists together
-        # to obtain the first 4 closeset, then second 4...
-        dists = list(zip(*[v for v in veh_ids]))
-        sort = self.env.sort_by_intersection_dist()
-
-        # Compare dists from farthest to closest.
-        for i, veh_id in enumerate(sort[::-1]):
-            self.assertTrue(veh_id in dists[i // 4])
 
     def tearDown(self):
         # terminate the traci instance
