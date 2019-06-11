@@ -930,16 +930,8 @@ class TestBottleneckEnv(unittest.TestCase):
         # test_utility_methods                                                #
         # =================================================================== #
 
-        # test_distance_to_bottleneck
-        self.assertEqual(self.env.distance_to_bottleneck('human_0'), 545.0)
-        self.assertEqual(self.env.distance_to_bottleneck('human_9'), -1)
-
         # test_get_bottleneck_density
         self.assertEqual(self.env.get_bottleneck_density(), 0)
-
-        # test_get_avg_bottleneck_velocity
-        self.env.step(None)
-        self.assertAlmostEqual(self.env.get_avg_bottleneck_velocity(), 0.5, 1)
 
 
 class TestBottleneckAccelEnv(unittest.TestCase):
